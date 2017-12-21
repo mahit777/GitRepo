@@ -3,6 +3,7 @@ package myprivate.githubrepo.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.SearchRecentSuggestions;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -62,7 +63,8 @@ public class Home extends AppCompatActivity {
         HashMap<String,String> parameterMap=new HashMap<>();
         parameterMap.put("q",query);
         String API_BASE_URL = "https://api.github.com/";
-
+        SharedPreferences sharedPreferences=getSharedPreferences(getString(R.string.queryString),MODE_PRIVATE);
+        sharedPreferences.edit().putString(getString(R.string.home_search),query).apply();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         Retrofit.Builder builder =
@@ -157,7 +159,21 @@ public class Home extends AppCompatActivity {
 
             doMySearch(query);
         }
+        else{
+            getQuery();
+        }
+
         super.onStart();
+    }
+
+    private void getQuery() {
+        SharedPreferences sharedPreferences=getSharedPreferences(getString(R.string.queryString),MODE_PRIVATE);
+        String userInput=sharedPreferences.getString(getString(R.string.home_search),"");
+        if(userInput.isEmpty()){
+            Snackbar.make(recyclerView,"Press the search button on the top to search repositories",Snackbar.LENGTH_LONG).show();
+        }else{
+            doMySearch(userInput);
+        }
     }
 
     @Override
