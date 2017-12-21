@@ -197,5 +197,10 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="queryString">userInput</string>
+    <string name="date_format">YYYY-MM-DD</string>
+    <string name="language_hint">Major language of Repo</string>
+    <string name="repo_hint">Repo name</string>
+    <string name="user_hint">Search for specific users</string>
+    <string name="size_hint">size of the repository</string>
 
 </resources>

@@ -3,6 +3,7 @@ package myprivate.githubrepo.RetrofitUtils;
 import java.util.List;
 import java.util.Map;
 
+import myprivate.githubrepo.Model.License;
 import myprivate.githubrepo.Model.Repository;
 import myprivate.githubrepo.Model.SearchResult;
 import myprivate.githubrepo.Model.User;
@@ -17,7 +18,7 @@ import retrofit2.http.QueryMap;
  */
 
 public interface GitHubClient {
-    @GET("/users/{user}/repos")
+    @GET("users/{user}/repos")
     Call<List<Repository>> userRepoList(
             @Path("user") String username
     );
@@ -26,6 +27,8 @@ public interface GitHubClient {
     Call<SearchResult> seaerchRepo(@QueryMap Map<String,String> querryMap);
     @GET("repos/{full-name}/contributors")
     Call<List<User>> contributorsList(@Path(value = "full-name",encoded = true) String fullName);
+    @GET("licenses")
+    Call<List<License>> licenseList();
 
 
 }
