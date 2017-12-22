@@ -11,6 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**
@@ -24,7 +25,7 @@ public interface GitHubClient {
     );
 
     @GET("search/repositories")
-    Call<SearchResult> seaerchRepo(@QueryMap Map<String,String> querryMap);
+    Call<SearchResult> seaerchRepo(@Query(value ="q",encoded = true) List<String> q );
     @GET("repos/{full-name}/contributors")
     Call<List<User>> contributorsList(@Path(value = "full-name",encoded = true) String fullName);
     @GET("licenses")

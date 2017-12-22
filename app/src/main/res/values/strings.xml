@@ -202,5 +202,6 @@
     <string name="repo_hint">Repo name</string>
     <string name="user_hint">Search for specific users</string>
     <string name="size_hint">size of the repository</string>
+    <string name="prompt_license">Select License</string>
 
 </resources>
