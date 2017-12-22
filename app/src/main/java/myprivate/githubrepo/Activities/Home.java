@@ -84,7 +84,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    private void doMySearch(final String query) {
+    private void doMySearch(final String query,String filters) {
 
 
         progressBar.setVisibility(View.VISIBLE);
@@ -129,7 +129,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
         GitHubClient client = retrofit.create(GitHubClient.class);
         ArrayList<String> finList=new ArrayList<String>();
-        finList.add(query);
+        finList.add(query+filters);
         Call<SearchResult> call = client.seaerchRepo(finList);
         call.enqueue(new Callback<SearchResult>() {
 
@@ -191,7 +191,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
             }
         });
         if (repositoryArrayList.size() > 10) {
-            repositoryArrayList = new ArrayList<>(repositoryArrayList.subList(repositoryArrayList.size() - 10, repositoryArrayList.size() - 1));
+            repositoryArrayList = new ArrayList<>(repositoryArrayList.subList(repositoryArrayList.size() - 11, repositoryArrayList.size() - 1));
         }
         Collections.reverse(repositoryArrayList);
 
@@ -205,7 +205,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             query = intent.getStringExtra(SearchManager.QUERY);
 
-            doMySearch(query);
+            doMySearch(query,"");
         } else {
             getQuery();
         }
@@ -220,7 +220,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
             Snackbar.make(recyclerView, "Press the search button on the top to search repositories", Snackbar.LENGTH_LONG).show();
         } else {
             query=userInput;
-            doMySearch(userInput);
+            doMySearch(userInput,"");
         }
     }
 
@@ -306,8 +306,16 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                     Toast.makeText(context,"please select a day before today",Toast.LENGTH_SHORT).show();
 
                 }else {
+                    String month=(i1+1)+"";
+                    if(month.length()!=2){
+                        month="0"+month;
+                    }
+                    String day=i2+"";
+                    if(day.length()!=2){
+                        day="0"+day;
+                    }
 
-                    view.setText(i + "-" + i1 + "-" + i2);
+                    view.setText(i + "-" + month + "-" +day);
                 }
             }
         },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DATE));
@@ -318,7 +326,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
     private void callFilter() {
 //        final String genratedQuery=query;
-        generatedQuerry=query;
+
+
+        generatedQuerry="";
         final Dialog filterDialog = new Dialog(Home.this);
         filterDialog.setContentView(R.layout.dialog_filter);
         filterDialog.getWindow().setLayout(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
@@ -359,7 +369,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                     if(!createdFromDate.equals(getString(R.string.date_format))){
+                     if(!createdFromDate.getText().toString().trim().equals(getString(R.string.date_format))){
                          generatedQuerry= generatedQuerry+"+created:>="+createdFromDate.getText().toString().trim();
                      }
                 if(!createdToDate.getText().toString().trim().equals(getString(R.string.date_format))){
@@ -407,9 +417,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
                 }
                 License license=(License)(liciense.getSelectedItem());
-                if(!license.getName().equals(getString(R.string.prompt_license))){
-                    generatedQuerry= generatedQuerry+"+license:"+license.getKey();
+                if(license!=null) {
+                    if (!license.getName().equals(getString(R.string.prompt_license))) {
+                        generatedQuerry = generatedQuerry + "+license:" + license.getKey();
 
+                    }
                 }
 
                 String user=userName.getText().toString().trim();
@@ -422,7 +434,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 
                 }
                 filterDialog.dismiss();
-                doMySearch(generatedQuerry);
+               doMySearch(query,generatedQuerry);
 
             }
         });
